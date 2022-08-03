@@ -7,15 +7,20 @@ CRGB leds_A[NUM_LEDS];
 #define PIN_B 3
 CRGB leds_B[NUM_LEDS];
 
+// Warlock
+DEFINE_GRADIENT_PALETTE( Warlock ) {
+    0, 0,  172,  0,
+  255, 148,255,  0};
+  
 // Fire
-DEFINE_GRADIENT_PALETTE( Fire_1_gp ) {
+DEFINE_GRADIENT_PALETTE( Fire ) {
     0, 255,  64,  0,
   127, 255, 128,  0,
   255, 255,255,  64};
 
 
 
-CRGBPalette16 currentPalette = Fire_1_gp;
+CRGBPalette16 currentPalette = Warlock;
 
 /* GLOBAL VARIABLES */
 uint8_t paletteIndex;
