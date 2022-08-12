@@ -4,10 +4,14 @@
 #define NUM_LEDS 37
 #define DATA_PIN_A 2
 #define DATA_PIN_B 3
-#define BRIGHTNESS 92
-
 CRGB leds_A[NUM_LEDS];
 CRGB leds_B[NUM_LEDS];
+
+#define NUM_LEDS_TAIL 6
+#define DATA_PIN_D 5
+CRGB leds_D[NUM_LEDS_TAIL];
+
+#define BRIGHTNESS 92
 
 // Gradient palette "bhw1_06_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_06.png.index.html
@@ -60,6 +64,7 @@ uint8_t lightningStrand; // Conduit selector
 void setup() { 
     FastLED.addLeds<WS2812B, DATA_PIN_A, GRB>(leds_A, NUM_LEDS);
     FastLED.addLeds<WS2812B, DATA_PIN_B, GRB>(leds_B, NUM_LEDS);
+    FastLED.addLeds<WS2812B, DATA_PIN_D, GRB>(leds_B, 6);
     FastLED.setBrightness(BRIGHTNESS);
 }
 
@@ -119,16 +124,6 @@ uint8_t ll_flashBrightness;
 uint8_t ll_paletteIndex;
 
 /* #2 LIGHTNING LINE */
-// TODO: Random direction and number of LEDs involved...
-// Randomly select an LED
-// ll_flashLED = random8(NUM_LEDS - 1); // Lock the LED of choice
-// ll_flashLED_length = random8(NUM_LEDS / 2);
-
-// if (ll_flashLED < NUM_LEDS / 2) {
-//   // If it's in the first half...      
-// } else {
-//   // If it's in the last half...
-// }
 void lightningLine() {
   lightningStrand = random8(12); // Which conduit
   ll_numberOfFlashes = random8(1, 6); // Determine number of flashes
@@ -188,8 +183,8 @@ void lightningCrawl() {
       leds_A[n] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
       delay(NUM_LEDS / n + 1);
-//      leds_A[n] = CRGB::Black;
-//      FastLED.show();
+      leds_A[n] = CRGB::Black;
+      FastLED.show();
       delay(NUM_LEDS / n + 1);
     }
   }
@@ -199,8 +194,8 @@ void lightningCrawl() {
       leds_B[n] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
       delay(NUM_LEDS / n + 1);
-//      leds_B[n] = CRGB::Black;
-//      FastLED.show();
+      leds_B[n] = CRGB::Black;
+      FastLED.show();
       delay(NUM_LEDS / n + 1);
     }
   }
@@ -218,42 +213,43 @@ uint8_t timer = 0;
 void loop()
 {
 
-  // TIMER
-  EVERY_N_HOURS(1) {
+  // Lightning Flashes
+  EVERY_N_SECONDS(random8(randomness)) { 
+    ls_flashOccurence = random8(8);
 
-    if (timer == 24) {
-      timer = 0;
+    for (int x = 0; x <= ls_flashOccurence; x++) {
+      lightningSpark();
     }
-
-    timer++;
   }
 
-  // if (timer <= 8) {
-    // Lightning Flashes
-      EVERY_N_SECONDS(random8(randomness)) { 
-        ls_flashOccurence = random8(8);
+  // Lightning Crawl
+  EVERY_N_SECONDS(random8(randomness * 2)) {
+    lightningCrawl();
+  }
+  
+  // Lightning Line
+  EVERY_N_SECONDS(random8(randomness * 3)) {
+    lightningLine();
+  }
 
-        for (int x = 0; x <= ls_flashOccurence; x++) {
-          lightningSpark();
-        }
-      }
+  fill_palette(leds_D, NUM_LEDS_TAIL, ll_paletteIndex, 1, currentPalette, random(32, BRIGHTNESS), LINEARBLEND);
+  fill_solid(leds_D, NUM_LEDS_TAIL, CRGB::Black);
 
-      // Lightning Crawl
-      EVERY_N_SECONDS(random8(randomness * 2)) {
-        lightningCrawl();
-      }
-      
-      // Lightning Line
-      EVERY_N_SECONDS(random8(randomness * 3)) {
-        lightningLine();
-      }
+  // Reset strands to black
+  fadeToBlackBy(leds_A, NUM_LEDS, 24);
+  fadeToBlackBy(leds_B, NUM_LEDS, 24);
+  fadeToBlackBy(leds_D, NUM_LEDS_TAIL, 24);
 
-      EVERY_N_MILLISECONDS(10) {
-        ll_paletteIndex++;
-      }
-      
-      // Reset strands to black
-      fadeToBlackBy(leds_A, NUM_LEDS, 24);
-      fadeToBlackBy(leds_B, NUM_LEDS, 24);
-  // }
+  EVERY_N_MILLISECONDS(10) {
+    ll_paletteIndex++;
+  }
 }
+
+//EVERY_N_HOURS(1) {
+//
+//  if (timer == 24) {
+//    timer = 0;
+//  }
+//
+//  timer++;
+//}
