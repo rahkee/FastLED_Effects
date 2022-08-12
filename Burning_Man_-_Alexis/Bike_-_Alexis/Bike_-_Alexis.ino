@@ -1,13 +1,19 @@
+// TODO: Underestand MILLIS()
+
 #include <Arduino.h>
 #include <FastLED.h>
 
-#define NUM_LEDS 37
+
 #define DATA_PIN_A 2
 #define DATA_PIN_B 3
+#define NUM_LEDS 37
+#define DATA_PIN_C 5
+#define NUM_LEDS_C 6
 #define BRIGHTNESS 128
 
 CRGB leds_A[NUM_LEDS];
 CRGB leds_B[NUM_LEDS];
+CRGB leds_C[NUM_LEDS_C];
 
 // Gradient palette "bhw1_06_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_06.png.index.html
@@ -48,6 +54,7 @@ DEFINE_GRADIENT_PALETTE( lightning ) {
 
 
 CRGBPalette16 currentPalette = revlon;
+CRGBPalette16 fusionPalette = bhw1_06_gp;
 
 /* TIMER */
 
@@ -60,6 +67,7 @@ uint8_t lightningStrand; // Conduit selector
 void setup() { 
     FastLED.addLeds<WS2812B, DATA_PIN_A, GRB>(leds_A, NUM_LEDS);
     FastLED.addLeds<WS2812B, DATA_PIN_B, GRB>(leds_B, NUM_LEDS);
+    FastLED.addLeds<WS2812B, DATA_PIN_C, GRB>(leds_C, NUM_LEDS_C);
     FastLED.setBrightness(BRIGHTNESS);
 }
 
@@ -86,19 +94,19 @@ void lightningSpark() {
     if (lightningStrand < 6) {
       leds_A[ls_flashLED] = ColorFromPalette(currentPalette, ls_paletteIndex, ls_flashBrightness, LINEARBLEND);
       FastLED.show();
-      delay(ls_delayBetweenFlashes);
+      FastLED.delay(ls_delayBetweenFlashes);
       leds_A[ls_flashLED] = CRGB::Black;
       FastLED.show();
-      delay(ls_delayBetweenFlashes);
+      FastLED.delay(ls_delayBetweenFlashes);
     }
 
     if (lightningStrand >= 6) {
       leds_B[ls_flashLED] = ColorFromPalette(currentPalette, ls_paletteIndex, ls_flashBrightness, LINEARBLEND);
       FastLED.show();
-      delay(ls_delayBetweenFlashes);
+      FastLED.delay(ls_delayBetweenFlashes);
       leds_B[ls_flashLED] = CRGB::Black;
       FastLED.show();
-      delay(ls_delayBetweenFlashes);
+      FastLED.delay(ls_delayBetweenFlashes);
     }
 
     ls_paletteIndex += x + 12;
@@ -132,7 +140,7 @@ void lightningLine() {
       FastLED.setBrightness(3 * y);
       leds_A[y] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
-      delay(NUM_LEDS / y + 1);
+      FastLED.delay(NUM_LEDS / y + 1);
     }
 
     for (int z = 0; z <= ll_numberOfFlashes; z++) {
@@ -141,11 +149,11 @@ void lightningLine() {
 
       fill_palette(leds_A, NUM_LEDS, ll_paletteIndex, z, currentPalette, ll_flashBrightness, LINEARBLEND);
       FastLED.show();
-      delay(ll_delayBetweenFlashes);
+      FastLED.delay(ll_delayBetweenFlashes);
 
       fill_solid(leds_A, NUM_LEDS, CRGB::Black);
       FastLED.show();
-      delay(ll_delayBetweenFlashes);
+      FastLED.delay(ll_delayBetweenFlashes);
     }
   }
 
@@ -154,7 +162,7 @@ void lightningLine() {
       FastLED.setBrightness(3 * y);
       leds_B[y] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
-      delay(NUM_LEDS / y + 1);
+      FastLED.delay(NUM_LEDS / y + 1);
     }
 
     for (int z = 0; z <= ll_numberOfFlashes; z++) {
@@ -163,11 +171,11 @@ void lightningLine() {
 
       fill_palette(leds_B, NUM_LEDS, ll_paletteIndex, z, currentPalette, ll_flashBrightness, LINEARBLEND);
       FastLED.show();
-      delay(ll_delayBetweenFlashes);
+      FastLED.delay(ll_delayBetweenFlashes);
 
       fill_solid(leds_B, NUM_LEDS, CRGB::Black);
       FastLED.show();
-      delay(ll_delayBetweenFlashes);
+      FastLED.delay(ll_delayBetweenFlashes);
     }
   }
 }
@@ -181,80 +189,66 @@ void lightningCrawl() {
     for (int n = 0; n < NUM_LEDS; n++) {
       leds_A[n] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
-      
-    }
-
-    for (int x = 0; x < NUM_LEDS * 2; x++) {
-      fadeToBlackBy(leds_A, NUM_LEDS, NUM_LEDS * 2);
-    }
-
-    fill_solid(leds_B, NUM_LEDS, CRGB::Black);
-    FastLED.show();
+      fadeToBlackBy(leds_A, NUM_LEDS, NUM_LEDS * 4);
+    }    
   }
 
   if (lightningStrand >= 6) {
     for (int n = 0; n < NUM_LEDS; n++) {
       leds_B[n] = ColorFromPalette(currentPalette, ll_paletteIndex);
       FastLED.show();
+      fadeToBlackBy(leds_B, NUM_LEDS, NUM_LEDS * 4);
     }
-
-    for (int x = 0; x < NUM_LEDS * 2; x++) {
-      fadeToBlackBy(leds_B, NUM_LEDS, NUM_LEDS * 2);
-    }
-
-    fill_solid(leds_B, NUM_LEDS, CRGB::Black);
-    FastLED.show();
   }
 
-  if (chainLightning >= 200) {
+  fill_solid(leds_B, NUM_LEDS, CRGB::Black);
+  fill_solid(leds_A, NUM_LEDS, CRGB::Black);
+  FastLED.show();
+
+  if (chainLightning % 2) {
     lightningLine();
-  } else if (chainLightning <= 100) {
+  } else {
     lightningSpark();
   }
 }
 
+/* #4 Fusion Engine */
+void fusionEngine() {
+  fill_solid(leds_C, NUM_LEDS_C, ColorFromPalette(fusionPalette, ll_paletteIndex));
+  FastLED.setBrightness(random(BRIGHTNESS / 2, 160));
+  FastLED.show();
+}
+
 uint8_t randomness = 12;
-uint8_t timer = 0;
 
 void loop()
 {
-
-  // TIMER
-  EVERY_N_HOURS(1) {
-
-    if (timer == 24) {
-      timer = 0;
+    // Lightning Flashes
+    EVERY_N_SECONDS(random8(randomness)) { 
+      ls_flashOccurence = random8(6);
+  
+      for (int x = 0; x <= ls_flashOccurence; x++) {
+        lightningSpark();
+      }
+    }
+  
+    // Lightning Crawl
+    EVERY_N_SECONDS(random8(randomness * 2)) {
+      lightningCrawl();
+    }
+    
+    // Lightning Line
+    EVERY_N_SECONDS(random8(randomness * 3)) {
+      lightningLine();
     }
 
-    timer++;
-  }
+    fusionEngine();
 
-  // if (timer <= 8) {
-    // Lightning Flashes
-      EVERY_N_SECONDS(random8(randomness)) { 
-        ls_flashOccurence = random8(8);
-
-        for (int x = 0; x <= ls_flashOccurence; x++) {
-          lightningSpark();
-        }
-      }
-
-      // Lightning Crawl
-      EVERY_N_SECONDS(random8(randomness * 2)) {
-        lightningCrawl();
-      }
+    EVERY_N_MILLISECONDS(10) {
+      ll_paletteIndex++;
+    }      
       
-      // Lightning Line
-      EVERY_N_SECONDS(random8(randomness * 3)) {
-        lightningLine();
-      }
-
-      EVERY_N_MILLISECONDS(10) {
-        ll_paletteIndex++;
-      }
-      
-      // Reset strands to black
-      fadeToBlackBy(leds_A, NUM_LEDS, 24);
-      fadeToBlackBy(leds_B, NUM_LEDS, 24);
-  // }
+    // Reset strands to black
+    fadeToBlackBy(leds_A, NUM_LEDS, 24);
+    fadeToBlackBy(leds_B, NUM_LEDS, 24);
 }
