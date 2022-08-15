@@ -125,9 +125,14 @@ void loop()
     
     FillLEDsFromPaletteColors( startIndex);
 
-    fill_solid(leds_C, NUM_LEDS_C, ColorFromPalette(fusionPalette, startIndex, random8(32, startIndex * 32), currentBlending));
+    fill_solid(leds_C, NUM_LEDS_C, ColorFromPalette(fusionPalette, startIndex, random8(32, startIndex), currentBlending));
         
     FastLED.show();
+
+    fadeToBlackBy(leds_A, NUM_LEDS_AB, 24);
+    fadeToBlackBy(leds_B, NUM_LEDS_AB, 24);
+    fadeToBlackBy(leds_C, NUM_LEDS_C, 24);
+    
     FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
 
