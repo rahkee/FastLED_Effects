@@ -1,19 +1,18 @@
 #include <FastLED.h>
 
-#define LED_PIN_REAR     2
-#define NUM_LEDS_REAR   15
+#define LED_PIN_A     2
+#define NUM_LEDS_A   30
+CRGB leds_A[NUM_LEDS_A];
 
-#define LED_PIN_UNDER    3
-#define NUM_LEDS_UNDER  21
+#define LED_PIN_B    3
+#define NUM_LEDS_B  30
+CRGB leds_B[NUM_LEDS_B];
 
-#define LED_PIN_SIDES    4
-#define NUM_LEDS_SIDES  30
+#define LED_PIN_C    4
+#define NUM_LEDS_C  30
+CRGB leds_C[NUM_LEDS_C];
 
-CRGB leds_REAR[NUM_LEDS_REAR];
-CRGB leds_UNDER[NUM_LEDS_UNDER];
-CRGB leds_SIDES[NUM_LEDS_SIDES];
-
-#define BRIGHTNESS  92
+#define BRIGHTNESS  64
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 
@@ -103,17 +102,18 @@ DEFINE_GRADIENT_PALETTE( sherbet ) {
 
 
 CRGBPalette16 currentPalette;
-CRGBPalette16 fusionPalette = sherbet;
+CRGBPalette16 fusionPalette;
 TBlendType    currentBlending;
 
 void setup() {
     delay( 3000 ); // power-up safety delay
-    FastLED.addLeds<LED_TYPE, LED_PIN_REAR, COLOR_ORDER>(leds_REAR, NUM_LEDS_REAR).setCorrection( TypicalLEDStrip );
-    FastLED.addLeds<LED_TYPE, LED_PIN_UNDER, COLOR_ORDER>(leds_UNDER, NUM_LEDS_UNDER).setCorrection( TypicalLEDStrip );
-    FastLED.addLeds<LED_TYPE, LED_PIN_SIDES, COLOR_ORDER>(leds_SIDES, NUM_LEDS_SIDES).setCorrection( TypicalLEDStrip );
-    FastLED.setBrightness(  BRIGHTNESS );
+    FastLED.addLeds<LED_TYPE, LED_PIN_A, COLOR_ORDER>(leds_A, NUM_LEDS_A).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<LED_TYPE, LED_PIN_B, COLOR_ORDER>(leds_B, NUM_LEDS_B).setCorrection( TypicalLEDStrip );
+    FastLED.addLeds<LED_TYPE, LED_PIN_C, COLOR_ORDER>(leds_C, NUM_LEDS_C).setCorrection( TypicalLEDStrip );
+    FastLED.setBrightness(BRIGHTNESS);
 
     currentPalette = purple_pink_blue;
+    fusionPalette = purple_pink_blue;
     currentBlending = LINEARBLEND;
 }
 
@@ -128,23 +128,27 @@ void loop()
     
     FillLEDsFromPaletteColors(startIndex);
 
-    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, startIndex, random8(32, startIndex + 64), currentBlending));        
-    FastLED.show();
-    fadeToBlackBy(leds_REAR, NUM_LEDS_REAR, 24);
+//    fill_solid(leds_A, NUM_LEDS_A, ColorFromPalette(fusionPalette, startIndex, random8(32, startIndex + 64), currentBlending));
+//    FastLED.show();
+//    fadeToBlackBy(leds_A, NUM_LEDS_A, 24);
     
     FastLED.delay(1000 / UPDATES_PER_SECOND);
 }
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
+    for( int h = 0; h < NUM_LEDS_A; ++h) {
+        leds_A[h] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+        colorIndex++;
+    }
     
-    for( int i = 0; i < NUM_LEDS_SIDES; ++i) {
-        leds_SIDES[i] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+    for( int i = 0; i < NUM_LEDS_B; ++i) {
+        leds_B[i] = ColorFromPalette(currentPalette, colorIndex + 64, BRIGHTNESS, currentBlending);
         colorIndex++;
     }
 
-    for( int j = 0; j < NUM_LEDS_UNDER; ++j) {
-        leds_UNDER[j] = ColorFromPalette(currentPalette, colorIndex + 128, BRIGHTNESS, currentBlending);
+    for( int j = 0; j < NUM_LEDS_C; ++j) {
+        leds_C[j] = ColorFromPalette(currentPalette, colorIndex + 128, BRIGHTNESS, currentBlending);
         colorIndex++;
     }
 }
