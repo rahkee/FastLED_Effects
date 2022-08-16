@@ -13,7 +13,7 @@ CRGB leds_REAR[NUM_LEDS_REAR];
 CRGB leds_UNDER[NUM_LEDS_UNDER];
 CRGB leds_SIDES[NUM_LEDS_SIDES];
 
-#define BRIGHTNESS  92
+#define BRIGHTNESS  32
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 
@@ -49,86 +49,48 @@ DEFINE_GRADIENT_PALETTE( purple_pink_blue ) {
   255, 255,255,255
 };
 
-// Gradient palette "bhw1_minty_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_minty.png.index.html
+DEFINE_GRADIENT_PALETTE( fire ) {
+    0, 255,  0, 0,
+  255, 255, 179, 0,
+};
+
+// Gradient palette "bhw2_10_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw2/tn/bhw2_10.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
 // Size: 28 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE( mint ) {
-    0,  23,195,130,
-   99, 121,255,125,
-  121, 182,255,184,
-  127, 255,255,255,
-  134, 182,255,184,
-  153, 121,255,125,
-  255,  23,195,130};
-
-// Gradient palette "bhw1_13_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_13.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 8 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE( marshmallow ) {
-    0, 255,255, 45,
-  255, 157, 57,197};
+DEFINE_GRADIENT_PALETTE( bhw2_10_gp ) {
+    0,   0, 12,  0,
+   61, 153,239,112,
+  127,   0, 12,  0,
+  165, 106,239,  2,
+  196, 167,229, 71,
+  229, 106,239,  2,
+  255,   0, 12,  0};
 
 
-// Gradient palette "bhw2_07_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw2/tn/bhw2_07.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 24 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE( revlon ) {
-    0,  92,  1,  1,
-   26, 153, 20,  5,
-   79, 232, 72, 12,
-  127, 220,231, 89,
-  173, 232, 72, 12,
-  255,  92,  1,  1};
-
-  // Gradient palette "bhw2_sherbet2_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw2/tn/bhw2_sherbet2.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE( sherbet ) {
-    0, 217,  1,  1,
-   35, 249, 43, 19,
-   71, 247,125,172,
-  109, 206,  2, 32,
-  163, 210, 23,  9,
-  211, 255,255,255,
-  232, 252,199, 88,
-  255, 206,115, 52};
-
-
-CRGBPalette16 currentPalette;
-CRGBPalette16 fusionPalette = sherbet;
-TBlendType    currentBlending;
+CRGBPalette16 currentPalette = bhw2_10_gp;
+CRGBPalette16 fusionPalette = fire;
+TBlendType    currentBlending = LINEARBLEND;
 
 void setup() {
     delay( 3000 ); // power-up safety delay
     FastLED.addLeds<LED_TYPE, LED_PIN_REAR, COLOR_ORDER>(leds_REAR, NUM_LEDS_REAR).setCorrection( TypicalLEDStrip );
     FastLED.addLeds<LED_TYPE, LED_PIN_UNDER, COLOR_ORDER>(leds_UNDER, NUM_LEDS_UNDER).setCorrection( TypicalLEDStrip );
     FastLED.addLeds<LED_TYPE, LED_PIN_SIDES, COLOR_ORDER>(leds_SIDES, NUM_LEDS_SIDES).setCorrection( TypicalLEDStrip );
-    FastLED.setBrightness(  BRIGHTNESS );
-
-    currentPalette = purple_pink_blue;
-    currentBlending = LINEARBLEND;
 }
 
 
 void loop()
-{  
-  
-//    ChangePalettePeriodically();
-    
+{    
     static uint8_t startIndex = 0;
     startIndex = startIndex - 1; /* motion speed */
     
     FillLEDsFromPaletteColors(startIndex);
 
-    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, startIndex, random8(32, startIndex + 64), currentBlending));        
+//    meteorRain(CRGB::Black, ColorFromPalette(currentPalette, startIndex, random(92, 192), LINEARBLEND), random(1, 10), random(500, 2500), true, random(10, 40));    
+
+    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, random8(128), random8(128), currentBlending));        
     FastLED.show();
     fadeToBlackBy(leds_REAR, NUM_LEDS_REAR, 24);
     
@@ -144,7 +106,7 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
     }
 
     for( int j = 0; j < NUM_LEDS_UNDER; ++j) {
-        leds_UNDER[j] = ColorFromPalette(currentPalette, colorIndex + 128, BRIGHTNESS, currentBlending);
+        leds_UNDER[j] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
         colorIndex++;
     }
 }
@@ -157,22 +119,6 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
 //
 // Additionally, you can manually define your own color palettes, or you can write
 // code that creates color palettes on the fly.  All are shown here.
-
-void ChangePalettePeriodically()
-{
-    uint8_t secondHand = (millis() / 1000) % 60;
-    static uint8_t lastSecond = 99;
-    
-    if( lastSecond != secondHand) {
-        lastSecond = secondHand;
-        if( secondHand ==  10)  { currentPalette = purple_pink_blue;         currentBlending = LINEARBLEND; }
-        if( secondHand == 20)  { currentPalette = sherbet;   currentBlending = LINEARBLEND;  }
-        if( secondHand == 30)  { currentPalette = mint;   currentBlending = LINEARBLEND;  }
-        if( secondHand == 40)  { currentPalette = marshmallow;   currentBlending = LINEARBLEND;  }
-    }
-}
-
-
 
 // Additional notes on FastLED compact palettes:
 //
@@ -195,3 +141,52 @@ void ChangePalettePeriodically()
 // palette to Green (0,255,0) and Blue (0,0,255), and then retrieved 
 // the first sixteen entries from the virtual palette (of 256), you'd get
 // Green, followed by a smooth gradient from green-to-blue, and then Blue.
+
+void meteorRain(CRGB ColorBackground, CRGB ColorMeteor, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay) 
+{  
+  // set background color
+  fill_solid(leds_SIDES, NUM_LEDS_SIDES, ColorBackground );
+
+  for(int i = 0; i < NUM_LEDS_SIDES + NUM_LEDS_SIDES; i++) {
+    // fade color to background color for all LEDs
+    for(int j = 0; j < NUM_LEDS_SIDES; j++) {
+      if( (!meteorRandomDecay) || (random(10)>5) ) {
+        leds_SIDES[j] = fadeTowardColor(leds_SIDES[j], ColorBackground, meteorTrailDecay);       
+      }
+    }
+   
+    // draw meteor
+    for(int k = 0; k < meteorSize; k++) {
+      if(( i - k < NUM_LEDS_SIDES) && (i - k >= 0)) {
+        leds_SIDES[i - k]= ColorMeteor;
+      }
+    }
+   
+//    FastLED.delay(SpeedDelay);
+  }
+}
+
+// Functies from Kriegsman example
+CRGB fadeTowardColor( CRGB& cur, const CRGB& target, uint8_t amount)
+{
+  nblendU8TowardU8( cur.red,   target.red,   amount);
+  nblendU8TowardU8( cur.green, target.green, amount);
+  nblendU8TowardU8( cur.blue,  target.blue,  amount);
+  return cur;
+}
+
+// function used by "fadeTowardColor"
+void nblendU8TowardU8( uint8_t& cur, const uint8_t target, uint8_t amount)
+{
+  if( cur == target) return;
+  
+  if( cur < target ) {
+    uint8_t delta = target - cur;
+    delta = scale8_video( delta, amount);
+    cur += delta;
+  } else {
+    uint8_t delta = cur - target;
+    delta = scale8_video( delta, amount);
+    cur -= delta;
+  }
+}
