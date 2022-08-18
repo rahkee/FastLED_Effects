@@ -91,7 +91,7 @@ void loop()
     // DEFAULT: meteorRain(CRGB(0x10,0x00,0x00), CRGB(0xff,0xff,0x00),10 ,64 ,true, 30);
     // meteorRain(CRGB::Black, ColorFromPalette(currentPalette, startIndex, random(92, 192), LINEARBLEND), random(1, 10), random(500, 2500), true, random(10, 40));    
 
-    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, random8(128), random8(128), currentBlending));        
+    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, random8(255), random8(64), currentBlending));        
     FastLED.show();
     fadeToBlackBy(leds_REAR, NUM_LEDS_REAR, 24);
     
