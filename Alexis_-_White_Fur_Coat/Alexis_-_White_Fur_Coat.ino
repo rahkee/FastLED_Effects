@@ -1,9 +1,9 @@
 #include <FastLED.h>
 
-#define LED_PIN_FRONT     2
+#define LED_PIN_FRONT     3
 #define NUM_LEDS_FRONT   37
 
-#define LED_PIN_SIDES     3
+#define LED_PIN_SIDES     4
 #define NUM_LEDS_SIDES   37
 
 CRGB leds_FRONT[NUM_LEDS_FRONT];
