@@ -4,34 +4,47 @@
 #define NUM_LEDS_FRONT   37
 
 #define LED_PIN_SIDES     4
-#define NUM_LEDS_SIDES   37
+#define NUM_LEDS_SIDES   21
 
 CRGB leds_FRONT[NUM_LEDS_FRONT];
 CRGB leds_SIDES[NUM_LEDS_SIDES];
 
-#define BRIGHTNESS  128
+#define BRIGHTNESS_FRONT  4
+#define BRIGHTNESS_SIDES  16
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 
-#define UPDATES_PER_SECOND 100
-// Gradient palette "bhw2_grrrrr_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw2/tn/bhw2_grrrrr.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
+DEFINE_GRADIENT_PALETTE( lucky_charms ) {
+    0, 0, 0, 0,
+   105, 255, 71,209,
+   110, 162, 118,216,
+   115, 151, 212,245,
+   120, 71, 186, 225,
+   125, 161, 219, 182,
+   130, 250, 251, 139,
+   135, 204, 187, 178,
+   140, 157, 122, 216,
+   145, 225, 71, 209,
+   255, 0, 0, 0
+};
 
-DEFINE_GRADIENT_PALETTE( bhw2_grrrrr_gp ) {
-    0, 184, 15,155,
-   35,  78, 46,168,
-   84,  65,169,230,
-  130,   9,127,186,
-  163,  77,182,109,
-  191, 242,246, 55,
-  216, 142,128,103,
-  255,  72, 50,168};
+DEFINE_GRADIENT_PALETTE( fruit_punch ) {
+    0, 227, 101,  3,
+  117, 194, 18, 19,
+  255,  92,  8, 192};
 
+DEFINE_GRADIENT_PALETTE( green_yellow ) {
+    0, 0, 0,  0,
+    126, 0, 0, 0,
+  127,  128,  255, 0,
+  128, 164, 255, 0,
+  129,  128,  255, 0,
+  130, 0, 0, 0,
+  255, 0, 0, 0,
+  };
 
-
-CRGBPalette16 currentPalette = bhw2_grrrrr_gp;
+CRGBPalette16 currentPalette = green_yellow;
+//CRGBPalette16 currentPalette = RainbowColors_p;
 TBlendType    currentBlending = LINEARBLEND;
 
 void setup() {
@@ -42,25 +55,25 @@ void setup() {
 
 
 void loop()
-{    
+{  
     static uint8_t startIndex = 0;
     startIndex = startIndex - 1; /* motion speed */
-    
+
     FillLEDsFromPaletteColors(startIndex);
     
-    FastLED.delay(1000 / UPDATES_PER_SECOND);
+    FastLED.delay(24);
 }
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
-    
-    for( int i = 0; i < NUM_LEDS_FRONT; ++i) {
-        leds_FRONT[i] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
-        colorIndex++;
-    }
 
-    for( int j = 0; j < NUM_LEDS_SIDES; ++j) {
-        leds_SIDES[j] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS, currentBlending);
+  for( int i = 0; i < NUM_LEDS_FRONT; ++i) {
+        leds_FRONT[i] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS_FRONT, currentBlending);
         colorIndex++;
     }
+    
+  for( int j = 0; j < NUM_LEDS_SIDES; ++j) {
+        leds_SIDES[j] = ColorFromPalette(currentPalette, colorIndex, BRIGHTNESS_SIDES, currentBlending);
+        colorIndex++;
+    }    
 }
