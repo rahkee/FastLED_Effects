@@ -46,15 +46,13 @@ void setup()
 
 void loop() 
 {
-  chaosTheory = random8(1, 10);
-                                  // color                                                               // meteor size // meteor decay  // meteor random decay
-  meteorRain(CRGB::Black, ColorFromPalette(currentPalette, paletteIndex, random8(92, 192), LINEARBLEND), random8(1, 3), random8(750, 1500), true, random8(5, 26));  
-  // test: to make sure 26 (largest delay is no more than numLeds?
-  // or test: to see if last number should be half of numLeds, NUM_LEDS / 2?
-    
+  chaosTheory = random8(1, 20);
 
-  fadeToBlackBy(leds_A, NUM_LEDS, NUM_LEDS);
-  FastLED.delay(chaosTheory * 100);
+  EVERY_N_MILLISECONDS(random8(NUM_LEDS * 2, NUM_LEDS * 6)) {
+                              // color                                                               // meteor size // meteor decay  // meteor random decay // meteor fade
+  meteorRain(CRGB::Black, ColorFromPalette(currentPalette, paletteIndex, random8(92, 192), LINEARBLEND), random8(1, 3), random8(125, 475), true, random8((NUM_LEDS / 3), NUM_LEDS));    
+  }
+                                fadeToBlackBy(leds_A, NUM_LEDS, NUM_LEDS);
 
   paletteIndex += chaosTheory;
 } 
