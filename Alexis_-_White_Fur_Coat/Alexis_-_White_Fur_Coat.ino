@@ -9,8 +9,8 @@
 CRGB leds_FRONT[NUM_LEDS_FRONT];
 CRGB leds_SIDES[NUM_LEDS_SIDES];
 
-#define BRIGHTNESS_FRONT  4
-#define BRIGHTNESS_SIDES  16
+#define BRIGHTNESS_FRONT  16
+#define BRIGHTNESS_SIDES  64
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 
@@ -35,11 +35,11 @@ DEFINE_GRADIENT_PALETTE( fruit_punch ) {
 
 DEFINE_GRADIENT_PALETTE( green_yellow ) {
     0, 0, 0,  0,
-    126, 0, 0, 0,
-  127,  128,  255, 0,
+    108, 0, 0, 0,
+  118,  128,  255, 0,
   128, 164, 255, 0,
-  129,  128,  255, 0,
-  130, 0, 0, 0,
+  138,  128,  255, 0,
+  148, 0, 0, 0,
   255, 0, 0, 0,
   };
 
