@@ -13,7 +13,7 @@ CRGB leds_REAR[NUM_LEDS_REAR];
 CRGB leds_UNDER[NUM_LEDS_UNDER];
 CRGB leds_SIDES[NUM_LEDS_SIDES];
 
-#define BRIGHTNESS  32
+#define BRIGHTNESS  64
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 
@@ -69,7 +69,7 @@ DEFINE_GRADIENT_PALETTE( bhw2_10_gp ) {
   255,   0, 12,  0};
 
 
-CRGBPalette16 currentPalette = bhw2_10_gp;
+CRGBPalette16 currentPalette = LavaColors_p;
 CRGBPalette16 fusionPalette = fire;
 TBlendType    currentBlending = LINEARBLEND;
 
@@ -91,7 +91,7 @@ void loop()
     // DEFAULT: meteorRain(CRGB(0x10,0x00,0x00), CRGB(0xff,0xff,0x00),10 ,64 ,true, 30);
     // meteorRain(CRGB::Black, ColorFromPalette(currentPalette, startIndex, random(92, 192), LINEARBLEND), random(1, 10), random(500, 2500), true, random(10, 40));    
 
-    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, random8(255), random8(64), currentBlending));        
+    fill_solid(leds_REAR, NUM_LEDS_REAR, ColorFromPalette(fusionPalette, random8(255), random8(16), currentBlending));        
     FastLED.show();
     fadeToBlackBy(leds_REAR, NUM_LEDS_REAR, 24);
     

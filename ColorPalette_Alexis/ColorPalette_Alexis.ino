@@ -118,7 +118,7 @@ void setup() {
 void loop()
 {  
   
-//    ChangePalettePeriodically();
+    ChangePalettePeriodically();
     
     static uint8_t startIndex = 0;
     startIndex = startIndex - 1; /* motion speed */
@@ -163,8 +163,9 @@ void ChangePalettePeriodically()
     if( lastSecond != secondHand) {
         lastSecond = secondHand;
         if( secondHand ==  10)  { currentPalette = purple_pink_blue;         currentBlending = LINEARBLEND; }
-        if( secondHand == 20)  { currentPalette = sherbet;   currentBlending = LINEARBLEND;  }
-        if( secondHand == 30)  { currentPalette = mint;   currentBlending = LINEARBLEND;  }
-        if( secondHand == 40)  { currentPalette = marshmallow;   currentBlending = LINEARBLEND;  }
+//        if( secondHand == 20)  { currentPalette = sherbet;   currentBlending = LINEARBLEND;  }
+        if( secondHand == 20)  { currentPalette = mint;   currentBlending = LINEARBLEND;  }
+        if( secondHand == 30)  { currentPalette = marshmallow;   currentBlending = LINEARBLEND;  }
+        if( secondHand == 40)  { currentPalette = RainbowColors_p;   currentBlending = LINEARBLEND;  }
     }
 }

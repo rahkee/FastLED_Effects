@@ -41,7 +41,7 @@ uint8_t chaosTheory;
 void setup()
 {
   FastLED.addLeds<WS2812, PIN_A, GRB>(leds_A, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness(92);
+  FastLED.setBrightness(192);
 }
 
 void loop() 
@@ -50,7 +50,7 @@ void loop()
 
   EVERY_N_MILLISECONDS(random8(NUM_LEDS * 2, NUM_LEDS * 6)) {
                               // color                                                               // meteor size // meteor decay  // meteor random decay // meteor fade
-  meteorRain(CRGB::Black, ColorFromPalette(currentPalette, paletteIndex, random8(92, 192), LINEARBLEND), random8(1, 3), random8(125, 475), true, random8((NUM_LEDS / 3), NUM_LEDS));    
+  meteorRain(CRGB::Black, ColorFromPalette(currentPalette, paletteIndex, random8(92, 192), LINEARBLEND), random8(1, 3), random8(125, 475), true, random8((NUM_LEDS / 2), NUM_LEDS));    
   }
                                 fadeToBlackBy(leds_A, NUM_LEDS, NUM_LEDS);
 

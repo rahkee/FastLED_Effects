@@ -2,7 +2,7 @@
 
 #define LED_PIN     13
 #define NUM_LEDS    2
-#define BRIGHTNESS  224
+#define BRIGHTNESS  255
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
@@ -48,7 +48,7 @@ void loop()
     static uint8_t startIndex = 0;
     startIndex += random(255); /* motion speed */
     
-    fill_solid(leds, NUM_LEDS, ColorFromPalette(currentPalette, startIndex, random8(startIndex + 64, BRIGHTNESS), currentBlending));        
+    fill_solid(leds, NUM_LEDS, ColorFromPalette(currentPalette, startIndex, random8(startIndex + 92, BRIGHTNESS), currentBlending));        
     FastLED.show();
     fadeToBlackBy(leds, NUM_LEDS, 24);
     FastLED.delay(random(96));
